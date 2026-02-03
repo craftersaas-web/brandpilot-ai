@@ -1,6 +1,8 @@
 "use client";
 
 import React, { useState, useEffect } from "react";
+import { useSession } from "next-auth/react";
+import { useRouter } from "next/navigation";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -37,11 +39,31 @@ const PLATFORMS = [
 ];
 
 export default function DashboardPage() {
+    const { data: session, status } = useSession();
+    const router = useRouter();
     const [brandName, setBrandName] = useState("");
     const [website, setWebsite] = useState("");
     const [industry, setIndustry] = useState("Software");
     const [isLoading, setIsLoading] = useState(false);
     const [auditResult, setAuditResult] = useState<any>(null);
+
+    useEffect(() => {
+        if (status === "unauthenticated") {
+            router.push("/");
+        }
+    }, [status, router]);
+
+    if (status === "loading") {
+        return (
+            <div className="flex items-center justify-center min-h-screen">
+                <div className="w-8 h-8 border-2 border-primary border-t-transparent rounded-full animate-spin" />
+            </div>
+        );
+    }
+
+    if (!session) {
+        return null;
+    }
 
     const runAudit = async () => {
         if (!brandName.trim()) return;

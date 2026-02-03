@@ -35,6 +35,12 @@ export default function HistoryPage() {
     const [currentPage, setCurrentPage] = useState(1);
     const itemsPerPage = 5;
 
+    React.useEffect(() => {
+        if (status === "unauthenticated") {
+            router.push("/");
+        }
+    }, [status, router]);
+
     if (status === "loading") {
         return (
             <div className="flex items-center justify-center min-h-screen">
@@ -44,7 +50,6 @@ export default function HistoryPage() {
     }
 
     if (!session) {
-        router.push("/");
         return null;
     }
 

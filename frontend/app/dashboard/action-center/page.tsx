@@ -1,6 +1,8 @@
 "use client";
 
 import React, { useState, Suspense } from "react";
+import { useSession } from "next-auth/react";
+import { useRouter } from "next/navigation";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -50,11 +52,31 @@ const SAMPLE_AUDIT_DATA = {
 };
 
 function ActionCenterContent() {
+    const { data: session, status } = useSession();
+    const router = useRouter();
     const searchParams = useSearchParams();
     const [activeTab, setActiveTab] = useState("overview");
     const [brandName, setBrandName] = useState("Your Brand");
     const [website, setWebsite] = useState("");
     const [industry, setIndustry] = useState("Software");
+
+    React.useEffect(() => {
+        if (status === "unauthenticated") {
+            router.push("/");
+        }
+    }, [status, router]);
+
+    if (status === "loading") {
+        return (
+            <div className="flex items-center justify-center min-h-screen">
+                <div className="w-8 h-8 border-2 border-primary border-t-transparent rounded-full animate-spin" />
+            </div>
+        );
+    }
+
+    if (!session) {
+        return null;
+    }
 
     React.useEffect(() => {
         const tab = searchParams.get("tab");

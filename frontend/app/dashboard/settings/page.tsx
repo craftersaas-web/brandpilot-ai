@@ -31,6 +31,12 @@ export default function SettingsPage() {
     const [apiKey, setApiKey] = useState("gs_live_xxxxxxxxxxxxxxxxxxxxxxxxx");
     const [showApiKey, setShowApiKey] = useState(false);
 
+    React.useEffect(() => {
+        if (status === "unauthenticated") {
+            router.push("/");
+        }
+    }, [status, router]);
+
     if (status === "loading") {
         return (
             <div className="flex items-center justify-center min-h-screen">
@@ -40,7 +46,6 @@ export default function SettingsPage() {
     }
 
     if (!session) {
-        router.push("/");
         return null;
     }
 

@@ -17,6 +17,12 @@ export default function AdminLayout({
     // Check if user is admin
     const isAdmin = (session?.user as any)?.role === "admin";
 
+    React.useEffect(() => {
+        if (status === "unauthenticated" || (status === "authenticated" && !isAdmin)) {
+            router.push("/");
+        }
+    }, [status, isAdmin, router]);
+
     if (status === "loading") {
         return (
             <div className="flex items-center justify-center min-h-screen">
@@ -26,7 +32,6 @@ export default function AdminLayout({
     }
 
     if (!session || !isAdmin) {
-        router.push("/");
         return null;
     }
 
